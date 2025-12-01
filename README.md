@@ -1,47 +1,109 @@
-# OpenNext Starter
+# ファイル共有アプリ
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+このアプリは、ファイルを簡単に共有できるWebアプリケーションです。ファイルをアップロードすると、共有用のURLが生成され、そのURLを知っている人なら誰でもファイルをダウンロードできます。
 
-## Getting Started
+## このアプリでできること
 
-Read the documentation at https://opennext.js.org/cloudflare.
+### 📤 ファイルのアップロード
+- ブラウザからファイルを選択するか、ドラッグ&ドロップでファイルをアップロードできます
+- アップロードしたファイルは、安全に保存されます
 
-## Develop
+### ⏰ 有効期限の設定
+- ファイルの有効期限を設定できます（1日、3日、5日、7日から選択）
+- 有効期限が過ぎると、ファイルは自動的にダウンロードできなくなります
 
-Run the Next.js development server:
+### 🔗 共有URLの生成
+- ファイルをアップロードすると、共有用のURLが自動的に生成されます
+- このURLを他の人に送ることで、ファイルを共有できます
+- URLをクリックするだけで、簡単にファイルをダウンロードできます
 
-```bash
-npm run dev
-# or similar package manager command
-```
+## 使い方
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. ファイルをアップロードする
+1. ホームページの「ここにファイルをドラッグ&ドロップ」と書かれたエリアに、ファイルをドラッグ&ドロップします
+   - または、エリアをクリックしてファイルを選択します
+2. ファイルが選択されると、ファイル名が表示されます
+3. 有効期限を選択します（1日、3日、5日、7日から選べます）
+4. 「アップロード」ボタンをクリックします
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. 共有URLを取得する
+- アップロードが完了すると、共有URLが表示されます
+- 「コピー」ボタンをクリックすると、URLがクリップボードにコピーされます
+- このURLをメールやメッセージで他の人に送ります
 
-## Preview
+### 3. ファイルをダウンロードする
+- 共有URLをクリックすると、ファイルのダウンロードページが開きます
+- 「ファイルをダウンロード」ボタンをクリックすると、ファイルがダウンロードされます
+- 有効期限が切れている場合は、ダウンロードできません
 
-Preview the application locally on the Cloudflare runtime:
+## 使用技術スタック
 
-```bash
-npm run preview
-# or similar package manager command
-```
+このアプリは以下の技術を使って作られています：
 
-## Deploy
+### フロントエンド
+- **Next.js 14.2.0**: ReactベースのWebアプリケーションフレームワーク
+- **React 18.2.0**: ユーザーインターフェース構築のためのライブラリ
+- **TypeScript 5**: 型安全性を提供するプログラミング言語
+- **Tailwind CSS 3.4.18**: スタイリング用のCSSフレームワーク
+- **react-dropzone 14.3.8**: ドラッグ&ドロップファイルアップロード機能
 
-Deploy the application to Cloudflare:
+### バックエンド・API
+- **Hono 4.10.7**: 高速なWebフレームワーク（APIルート用）
+- **Drizzle ORM 0.44.7**: データベース操作のためのORM（Object-Relational Mapping）
 
+### インフラ・クラウドサービス
+- **Cloudflare Workers**: エッジコンピューティング環境
+- **Cloudflare D1**: SQLiteベースのデータベース（ファイル情報を保存）
+- **Cloudflare R2**: オブジェクトストレージ（実際のファイルを保存）
+- **@opennextjs/cloudflare 1.11.0**: Next.jsをCloudflare Workersで実行するためのアダプター
+
+### 開発ツール
+- **Wrangler 4.51.0**: Cloudflare Workersの開発・デプロイツール
+- **Drizzle Kit 0.31.7**: データベースマイグレーション管理ツール
+- **ESLint**: コード品質チェックツール
+
+## 技術的な詳細（開発者向け）
+
+このアプリのアーキテクチャ：
+
+- **フロントエンド**: Next.jsのApp Routerを使用したReactアプリケーション
+- **API**: Honoフレームワークを使用したRESTful API
+- **データベース**: Cloudflare D1（SQLite）でファイルのメタデータを管理
+- **ストレージ**: Cloudflare R2で実際のファイルを保存
+- **デプロイ**: Cloudflare Workers上で実行され、エッジネットワークで高速に配信
+
+### 開発環境のセットアップ
+
+1. 必要なソフトウェアをインストールします：
+   ```bash
+   npm install
+   ```
+
+2. 開発サーバーを起動します：
+   ```bash
+   npm run dev
+   ```
+   ブラウザで [http://localhost:3000](http://localhost:3000) を開きます
+
+3. Cloudflare環境でプレビューする場合：
+   ```bash
+   npm run preview
+   ```
+   ブラウザで [http://localhost:8787](http://localhost:8787) を開きます
+
+### デプロイ（本番環境への公開）
+
+Cloudflareにデプロイする場合：
 ```bash
 npm run deploy
-# or similar package manager command
 ```
 
-## Learn More
+## 注意事項
 
-To learn more about Next.js, take a look at the following resources:
+- アップロードしたファイルは、設定した有効期限が過ぎると自動的にダウンロードできなくなります
+- 共有URLを知っている人なら誰でもファイルをダウンロードできるため、機密情報を含むファイルの共有には注意してください
+- ファイルサイズの制限については、Cloudflare R2の制限に従います
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## サポート
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+問題が発生した場合や質問がある場合は、プロジェクトの管理者にお問い合わせください。
