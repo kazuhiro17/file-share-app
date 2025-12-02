@@ -93,10 +93,65 @@
 
 ### デプロイ（本番環境への公開）
 
-Cloudflareにデプロイする場合：
+**重要**: 本番環境で使用するには、Cloudflareにデプロイする必要があります。
+
+#### デプロイ前の準備
+
+1. **Cloudflareアカウントの認証**
+   ```bash
+   npx wrangler login
+   ```
+   ブラウザが開き、Cloudflareアカウントでログインします。
+
+2. **リモートD1データベースへのマイグレーション**
+   ローカルで作成したデータベーススキーマを本番環境に適用します：
+   ```bash
+   npm run db:push
+   ```
+   または、手動でマイグレーションを実行：
+   ```bash
+   npx wrangler d1 execute file-share-app --remote --file=./drizzle/migrations/0000_confused_morlocks.sql
+   ```
+
+3. **R2バケットの確認**
+   R2バケットが作成されているか確認します：
+   ```bash
+   npx wrangler r2 bucket list
+   ```
+   存在しない場合は作成：
+   ```bash
+   npx wrangler r2 bucket create file-share-app
+   ```
+
+4. **環境変数の設定**
+   `.env`ファイルに設定した環境変数をCloudflareのシークレットとして設定します：
+   ```bash
+   npx wrangler secret put CLOUDFLARE_ACCOUNT_ID
+   npx wrangler secret put CLOUDFLARE_DATABASE_ID
+   npx wrangler secret put CLOUDFLARE_TOKEN
+   npx wrangler secret put BASE_URL
+   ```
+   `BASE_URL`はデプロイ後のURL（例：`https://file-share-app.your-subdomain.workers.dev`）を設定してください。
+
+#### デプロイの実行
+
+準備が完了したら、以下のコマンドでデプロイします：
 ```bash
 npm run deploy
 ```
+
+このコマンドは以下を実行します：
+1. Next.jsアプリケーションをビルド
+2. Cloudflare Workers用に最適化
+3. Cloudflare Workersにデプロイ
+
+デプロイが完了すると、Cloudflare WorkersのURLが表示されます。そのURLが本番環境のURLになります。
+
+#### デプロイ後の確認
+
+1. デプロイされたURLにアクセスして、アプリが正常に動作するか確認します
+2. ファイルのアップロード・ダウンロード機能をテストします
+3. データベースとR2ストレージが正しく連携しているか確認します
 
 ## 注意事項
 

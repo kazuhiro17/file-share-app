@@ -61,10 +61,15 @@ app.post("/upload", async (c) => {
     .from(files)
     .orderBy(desc(files.createdAt))
     .limit(1);
+  
+  // リクエストから動的にベースURLを取得
+  const url = new URL(c.req.url);
+  const baseUrl = `${url.protocol}//${url.host}`;
+  
   return c.json({
     success: true,
     message: "ファイルを保存しました。",
-    url: `${process.env.BASE_URL}/files/${insertRecord[0].id}`,
+    url: `${baseUrl}/files/${insertRecord[0].id}`,
     expiresAt: expiresAt.toISOString(),
   });
 });
